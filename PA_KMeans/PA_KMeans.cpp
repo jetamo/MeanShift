@@ -9,13 +9,15 @@
 #include <numbers>
 #include <iomanip>
 #include <chrono>
+#include <sstream>
+#include <algorithm>
+
 
 using namespace std;
 
 struct Point
 {
-    float x;
-    float y;
+    vector<float> coords;
 };
 
 float min_x = 999999999;
@@ -28,6 +30,11 @@ float min_shift = 0.00001;
 float radius = 0.1f;
 int n = 200;
 int m = 0;
+
+int dimensions = 0;
+
+//string fileName = "mnist_test.csv";
+string fileName = "twodee.csv";
 
 float cluster_max_distance = 0.01;
 
@@ -50,103 +57,156 @@ void print_elapsed_time() {
     std::cout << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " milliseconds\n" << endl;
 }
 void read_data() {
-    fstream newfile;
-    newfile.open("s1.txt", ios::in); //open a file to perform read operation using file object
-    std::ifstream file("s1.txt");
-    if (!file.is_open()) {
-        std::cout << "Failed to open file: " << std::endl;
-    }
-
-    double x, y;
-    while (file >> x >> y) {
-        Point point = { x, y };
-        if (x < min_x)
-            min_x = x;
-        if (y < min_y)
-            min_y = y;
-        if (x > max_x)
-            max_x = x;
-        if (y > max_y)
-            max_y = y;
+    ifstream file(fileName);
+    string line;
+    while (getline(file, line)) {
+        Point point;
+        stringstream lineStream(line);
+        string cell;
+        while (getline(lineStream, cell, ',')) {
+            float temp_coord = stod(cell);
+            point.coords.push_back(temp_coord);
+        }
         points.push_back(point);
         m++;
     }
-    
 }
 
 float lerp(float v, float a, float b) {
+    if (a == b)
+        return 0.f;
+    else
         return (v - a) / (b - a);
-    }
-
-void normalize_data() {
-    for (int i = 0; i < points.size(); i++) {
-
-        //cout << points[i].x << " " << points[i].y << endl;
-        points[i].x = lerp(points[i].x, min_x, max_x);
-        points[i].y = lerp(points[i].y, min_y, max_y);
-        //cout << points[i].x << " " << points[i].y << endl;
-    }
 }
 
+void normalize_data() {
+    vector<Point> normalized_points;
+    dimensions = points[0].coords.size();
+    vector<float> min_values(dimensions, numeric_limits<float>::max());
+    vector<float> max_values(dimensions, numeric_limits<float>::lowest());
+    for (Point point : points) {
+        for (int i = 0; i < dimensions; i++) {
+            min_values[i] = min(min_values[i], point.coords[i]);
+            max_values[i] = max(max_values[i], point.coords[i]);
+        }
+    }
+    for (Point point : points) {
+        Point normalized_point;
+        for (int i = 0; i < dimensions; i++) {
+            float normalized_coord = lerp(point.coords[i], min_values[i], max_values[i]);
+            normalized_point.coords.push_back(normalized_coord);
+        }
+        normalized_points.push_back(normalized_point);
+        cout << normalized_point.coords[0] << " " << normalized_point.coords[1] << endl;
+    }
+    points = normalized_points;
+}
 
 
 float calculate_distance(Point a, Point b) {
-    return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+    float _sum = 0;
+    for (int i = 0; i < dimensions; i++) {
+        float diff = a.coords[i] - b.coords[i];
+        _sum += diff * diff;
+    }
+    return sqrt(_sum);
 }
 
+
+/*
 Point calculate_shift(Point p1) {
     bool done = false;
 
     while (!done) {
-        float sum1_x = 0.f;
-        float sum1_y = 0.f;
+
+        vector<float> sum(dimensions, 0.f);
+
         float sum2 = 0.f;
 
-#pragma omp parallel for
+        Point p_shifted;
+        p_shifted.coords.resize(dimensions, 0.f);
+//#pragma omp parallel for
         for (int i = 0; i < m; i++) {
             Point p2 = points[i];
             float distance = calculate_distance(p1, p2);
             if (distance > radius) {
                 continue;
             }
-            //sum1_x += 1 / (sqrt(2 * M_PI) * radius) * exp((- 1) * (pow(distance, 2) / (2 * pow(radius, 2)))) * p2.x;
-            //sum1_y += 1 / (sqrt(2 * M_PI) * radius) * exp((- 1) * (pow(distance, 2) / (2 * pow(radius, 2)))) * p2.y;
-            //sum2 += 1 / (sqrt(2 * M_PI) * radius) * exp((-1) * (pow(distance, 2) / (2 * pow(radius, 2))));
 
-            sum1_x += (1 / pow((sqrt(2 * M_PI)) * 1, 2)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2)))) * p2.x;
-            sum1_y += (1 / pow((sqrt(2 * M_PI)) * 1, 2)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2)))) * p2.y;
-            sum2 +=   (1 / pow((sqrt(2 * M_PI)) * 1, 2)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2))));
-            //sum1_x += p2.x;
-            //sum1_y += p2.y;
-            //sum2 += 1.f;
+            for (int j = 0; j < dimensions; j++) {
+                //sum1_x +=(1 / pow((sqrt(2 * M_PI)) * 1, 2))          * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2)))) * p2.x;
+                sum[j] +=  (1 / pow((sqrt(2 * M_PI)) * 1, dimensions)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2)))) * p2.coords[j];
+            }
+
+            
+            sum2 +=       (1 / pow((sqrt(2 * M_PI)) * 1, dimensions)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2))));
+
         }
-        float x_shifted = sum1_x / sum2;
-        float y_shifted = sum1_y / sum2;
-        
-        Point p_shifted;
-        p_shifted.x = x_shifted;
-        p_shifted.y = y_shifted;
+
+        for (int i = 0; i < dimensions; i++) {
+            float shifted_coord = sum[i] / sum2;
+            p_shifted.coords[i] = shifted_coord;
+            p1.coords[i] = shifted_coord;
+
+        }
 
         float tmp_distance = calculate_distance(p1, p_shifted);
         
         if (tmp_distance < min_shift)
             done = true;
-
-        p1.x = x_shifted;
-        p1.y = y_shifted;
-
     }
-
     return p1;
 }
+*/
 
+Point calculate_shift(Point p) {
+    bool done = false;
+
+    while (!done) {
+        vector<float> sum1(dimensions, 0.f);
+        float sum2 = 0.f;
+#pragma omp parallel for
+        for (int i = 0; i < m; i++) {
+            Point p2 = points[i];
+            float distance = calculate_distance(p, p2);
+            if (distance > radius) {
+                continue;
+            }
+
+            float value = (1 / pow((sqrt(2 * M_PI)) * 1, 2)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2))));
+            sum2 += value;
+
+            for (int j = 0; j < dimensions; j++) {
+                sum1[j] += value * p2.coords[j];
+            }
+        }
+
+        std::vector<float> shifted_coords(dimensions);
+        for (int j = 0; j < dimensions; j++) {
+            shifted_coords[j] = sum1[j] / sum2;
+        }
+
+        Point p_shifted;
+        p_shifted.coords = shifted_coords;
+
+        float tmp_distance = calculate_distance(p, p_shifted);
+
+        if (tmp_distance < min_shift)
+            done = true;
+
+        p.coords = shifted_coords;
+    }
+
+    return p;
+}
 void mean_shift() {
 #pragma omp parallel for
-    for (int i = 0; i < n; i++) {
-        Point p = calculate_shift(r_points[i]);
-        r_points[i] = p;
+    for (int l = 0; l < n; l++) {
+        Point p = calculate_shift(r_points[l]);
+        r_points[l] = p;
     }
 }
+
 
 void calculate_clusters() {
     int count = 1;

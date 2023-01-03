@@ -1,0 +1,16 @@
+﻿  PA_KMeans.cpp
+  The contents of <numbers> are available only with C++20 or later.
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(23,24): warning C4305: 'initializing': truncation from 'int' to 'float'
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(25,24): warning C4305: 'initializing': truncation from 'int' to 'float'
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(28,26): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(39,34): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(67,30): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(84,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(176,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(220,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Generating code
+  5 of 385 functions ( 1.3%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  PA_KMeans.vcxproj -> C:\Users\jetam\source\repos\PA_KMeans\x64\Release\PA_KMeans.exe
