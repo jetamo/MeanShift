@@ -33,8 +33,8 @@ int m = 0;
 
 int dimensions = 0;
 
-//string fileName = "mnist_test.csv";
-string fileName = "twodee.csv";
+string fileName = "mnist_test.csv";
+//string fileName = "twodee.csv";
 
 float cluster_max_distance = 0.01;
 
@@ -70,6 +70,8 @@ void read_data() {
         points.push_back(point);
         m++;
     }
+    dimensions = points[0].coords.size();
+    radius *= (dimensions/2);
 }
 
 float lerp(float v, float a, float b) {
@@ -81,7 +83,6 @@ float lerp(float v, float a, float b) {
 
 void normalize_data() {
     vector<Point> normalized_points;
-    dimensions = points[0].coords.size();
     vector<float> min_values(dimensions, numeric_limits<float>::max());
     vector<float> max_values(dimensions, numeric_limits<float>::lowest());
     for (Point point : points) {
@@ -97,7 +98,6 @@ void normalize_data() {
             normalized_point.coords.push_back(normalized_coord);
         }
         normalized_points.push_back(normalized_point);
-        cout << normalized_point.coords[0] << " " << normalized_point.coords[1] << endl;
     }
     points = normalized_points;
 }
@@ -112,52 +112,6 @@ float calculate_distance(Point a, Point b) {
     return sqrt(_sum);
 }
 
-
-/*
-Point calculate_shift(Point p1) {
-    bool done = false;
-
-    while (!done) {
-
-        vector<float> sum(dimensions, 0.f);
-
-        float sum2 = 0.f;
-
-        Point p_shifted;
-        p_shifted.coords.resize(dimensions, 0.f);
-//#pragma omp parallel for
-        for (int i = 0; i < m; i++) {
-            Point p2 = points[i];
-            float distance = calculate_distance(p1, p2);
-            if (distance > radius) {
-                continue;
-            }
-
-            for (int j = 0; j < dimensions; j++) {
-                //sum1_x +=(1 / pow((sqrt(2 * M_PI)) * 1, 2))          * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2)))) * p2.x;
-                sum[j] +=  (1 / pow((sqrt(2 * M_PI)) * 1, dimensions)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2)))) * p2.coords[j];
-            }
-
-            
-            sum2 +=       (1 / pow((sqrt(2 * M_PI)) * 1, dimensions)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2))));
-
-        }
-
-        for (int i = 0; i < dimensions; i++) {
-            float shifted_coord = sum[i] / sum2;
-            p_shifted.coords[i] = shifted_coord;
-            p1.coords[i] = shifted_coord;
-
-        }
-
-        float tmp_distance = calculate_distance(p1, p_shifted);
-        
-        if (tmp_distance < min_shift)
-            done = true;
-    }
-    return p1;
-}
-*/
 
 Point calculate_shift(Point p) {
     bool done = false;
@@ -199,6 +153,7 @@ Point calculate_shift(Point p) {
 
     return p;
 }
+
 void mean_shift() {
 #pragma omp parallel for
     for (int l = 0; l < n; l++) {
@@ -214,7 +169,6 @@ void calculate_clusters() {
     cluster_points.push_back(r_points[0]);
     //cout << "cluster: " << r_points[0].x << " " << r_points[0].y << endl;
     for (int i = 1; i < n; i++) {
-        //cout << r_points[i].x << " " << r_points[i].y << endl;
         Point p = r_points[i];
         bool _new = true;
         int s = cluster_points.size();
