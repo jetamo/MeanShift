@@ -27,19 +27,20 @@ float max_y = -1;
 
 float min_shift = 0.00001;
 
-float radius = 0.1f;
+float radius = 0.05f;
 int n = 200;
 int m = 0;
 
 int dimensions = 0;
 
-string fileName = "mnist_test.csv";
-//string fileName = "twodee.csv";
+//string fileName = "mnist_test.csv";
+string fileName = "twodee.csv";
 
 float cluster_max_distance = 0.01;
 
 vector<Point> points;
-vector<Point> r_points;
+Point r_points[5000]; //= (Point*)malloc(sizeof(Point) * 5000);
+Point r_points_original[5000]; //= (Point*)malloc(sizeof(Point) * 5000);
 
 std::chrono::high_resolution_clock::time_point t1;
 std::chrono::high_resolution_clock::time_point t2;
@@ -71,7 +72,7 @@ void read_data() {
         m++;
     }
     dimensions = points[0].coords.size();
-    radius *= (dimensions/2);
+    radius *= dimensions;
 }
 
 float lerp(float v, float a, float b) {
@@ -117,22 +118,29 @@ Point calculate_shift(Point p) {
     bool done = false;
 
     while (!done) {
-        vector<float> sum1(dimensions, 0.f);
+        std::vector<float> sum1(dimensions, 0.f);
         float sum2 = 0.f;
-#pragma omp parallel for
-        for (int i = 0; i < m; i++) {
-            Point p2 = points[i];
-            float distance = calculate_distance(p, p2);
-            if (distance > radius) {
-                continue;
-            }
 
-            float value = (1 / pow((sqrt(2 * M_PI)) * 1, 2)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2))));
-            sum2 += value;
+        for (int j = 0; j < dimensions; j++) {
+            float sum_tmp = 0.f;
+            bool sum2_done = j > 0;
+#pragma omp parallel for reduction(+:sum2, sum_tmp)
+            for (int i = 0; i < m; i++) {
+                Point p2 = r_points_original[i];
+                float distance = calculate_distance(p, p2);
+                if (distance > radius) {
+                    continue;
+                }
 
-            for (int j = 0; j < dimensions; j++) {
-                sum1[j] += value * p2.coords[j];
+                float value = (1 / pow((sqrt(2 * M_PI)) * 1, 2)) * exp((-1) * (pow(distance, 2) / (2 * pow(1, 2))));
+
+                if (!sum2_done)
+                    sum2 += value;
+
+                sum_tmp += value * p2.coords[j];
+
             }
+            sum1[j] = sum_tmp;
         }
 
         std::vector<float> shifted_coords(dimensions);
@@ -153,7 +161,6 @@ Point calculate_shift(Point p) {
 
     return p;
 }
-
 void mean_shift() {
 #pragma omp parallel for
     for (int l = 0; l < n; l++) {
@@ -167,7 +174,8 @@ void calculate_clusters() {
     int count = 1;
     vector<Point> cluster_points;
     cluster_points.push_back(r_points[0]);
-    //cout << "cluster: " << r_points[0].x << " " << r_points[0].y << endl;
+    cout << r_points[0].coords[0] << "   " << r_points[0].coords[1] << endl;
+
     for (int i = 1; i < n; i++) {
         Point p = r_points[i];
         bool _new = true;
@@ -178,7 +186,8 @@ void calculate_clusters() {
         }
         if (_new) {
             cluster_points.push_back(p);
-            //cout << "cluster: " << p.x << " " << p.y << endl;
+
+            cout << p.coords[0] << "   " << p.coords[1] << endl;
             count++;
         }
     }
@@ -195,7 +204,13 @@ int main() {
     read_data();
     normalize_data();
     n = m;
-    r_points = points;
+
+    for (int i = 0; i < m; i++) {
+        //memcpy(&r_points[i], &points[i], sizeof(Point));
+        //memcpy(&r_points_original[i] , &points[i], sizeof(Point));
+        r_points[i] = points.at(i);
+        r_points_original[i] = points.at(i);
+    }
 
     mean_shift();
 
@@ -204,4 +219,4 @@ int main() {
     end_timer();
     print_elapsed_time();
     return 0;
-} 
+}

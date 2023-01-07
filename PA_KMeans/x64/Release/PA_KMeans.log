@@ -1,16 +1,16 @@
-﻿  PA_KMeans.cpp
+﻿cl : command line warning D9025: overriding '/openmp' with '/openmp:experimental'
+  PA_KMeans.cpp
   The contents of <numbers> are available only with C++20 or later.
 C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(23,24): warning C4305: 'initializing': truncation from 'int' to 'float'
 C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(25,24): warning C4305: 'initializing': truncation from 'int' to 'float'
 C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(28,26): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(39,34): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(67,30): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(73,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(130,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(174,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(68,30): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(74,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(135,29): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(182,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   Generating code
-  11 of 381 functions ( 2.9%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  All 387 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   PA_KMeans.vcxproj -> C:\Users\jetam\source\repos\PA_KMeans\x64\Release\PA_KMeans.exe

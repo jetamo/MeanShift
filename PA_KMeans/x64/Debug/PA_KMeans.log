@@ -1,11 +1,12 @@
-﻿  PA_KMeans.cpp
+﻿cl : command line warning D9025: overriding '/openmp' with '/openmp:experimental'
+  PA_KMeans.cpp
   The contents of <numbers> are available only with C++20 or later.
 C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(23,24): warning C4305: 'initializing': truncation from 'int' to 'float'
 C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(25,24): warning C4305: 'initializing': truncation from 'int' to 'float'
 C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(28,26): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(39,34): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(67,30): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(84,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(176,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(220,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(68,30): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(74,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(139,29): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jetam\source\repos\PA_KMeans\PA_KMeans\PA_KMeans.cpp(187,38): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   PA_KMeans.vcxproj -> C:\Users\jetam\source\repos\PA_KMeans\x64\Debug\PA_KMeans.exe
